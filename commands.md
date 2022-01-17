@@ -50,7 +50,7 @@ django-admin startproject <projectname>
 # Always Design Your Models Based on the requirements of your project.
 
 # ASSOSIATION CLASS:
-	 - Which represents the relationship between other 2 classes (tbales) who are in Many to Many Relationship. e.g., Contacts and Groups are two classes which are in many to many relationship and we create an assosiation class called GroupContacts which shows relationship between these classes.
+	 - Which represents the relationship between other 2 classes (tables) who are in Many to Many Relationship. e.g., Contacts and Groups are two classes which are in many to many relationship and we create an assosiation class called GroupContacts which shows relationship between these classes.
 - One Many-to-Many Relationship with an Assosiation Class or Two 1-to-Many Relationship
 
 # Monolith:
@@ -222,3 +222,74 @@ django-admin startproject <projectname>
 	- use __year=value
 	filter(AttributeName__year=YearValue)
 	- query_set = Product.objects.filter(last_update__year=2021)
+
+
+# Complex Lookups:
+	- Multiple Filters:
+	- Condition is: inventory < 10 and price < 20. Multiple ways of Applying filter:
+	- 1: Passing Multiple Keyword Arguments: 
+	- query_set = Product.objects.filter(inventory__lt=10, unit_price__lt=20)
+	- 2: Multiple filters: (.filter() method returns QuerySet, So we can filter to a filter)
+	- query_set = Product.objects.filter(inventory__lt=10).filter(unit_price__lt=20)
+
+
+# Q Objects: (Short for Query)
+	- Using Q class, we can represent Query Expression and it produces a value.
+	- Each Q object encapsulates a Query Expression or a Keywprd Argument. Example:
+	- condition is: inventory < 10 OR price < 20.
+	- query_set = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
+	- query_set = Product.objects.filter(Q(inventory__lt=10) & ~Q(unit_price__lt=20))
+	- Here | stands for OR. and & stands for AND and ~ stands for NOT.
+
+
+# Referencing Fields:
+	- Find all the products where their inventory = unit_price. (Comparing Two Fileds)
+	- We CANNOT use following QuerySet for this:
+	- query_set = Product.objects.filter(inventory=unit_price)
+	- in Django, for such queries we use F Objects.
+
+
+# F Objects:
+	- using this class we can reference a particular field from the same table.
+	- query_set = Product.objects.filter(inventory=F('unit_price'))
+	- Using F Object, we can also reference fielf in a related table.
+	- query_set = Product.objects.filter(inventory=F('collection__id')), In general:
+	- F('relatedTableName__relatedTableFiled')
+
+
+# Sorting Data:
+	- .order_by() method helps us get data in a sorted way. We can sort data in one or more fields.
+	- query_set = Product.objects.order_by('title')
+	- In above queryset we have arranged data using title field in ascending order. For Descing order use '-' sign with filed name
+	- query_set = Product.objects.order_by('-title')	
+	- Sorting using multiple fileds.
+	- query_set = Product.objects.order_by('unit_price', '-title')
+	- With above query, we are sorting our data from cheapest to expensive, and if we have multiple products with the exact same price, within that group, our products will be sorted by thier title in descending order.
+	- .filter() method returns QuerySet object.
+	- QuerySets have methods called reverse. By calling this, we are actually reversing the direction of sort.
+	-  query_set = Product.objects.order_by('unit_price', '-title').reverse()
+	- Now unit price will be in descending order and title will be in ascending order. 
+	- We can also call order_by() method after applying filter() method, as filter() method also returns a QuerySet Object and order_by() is a method of queryset.
+	- query_set = Product.objects.filter(collection_id=1).order_by('unit_price)
+	- product = Product.objects.order_by('unit_price')[0]
+	- Above command returns an object because we are accessing the first element of our QuerySet.
+	- Accessing 1st element can be done in another way: Using earliest() method. earliest() method returns an object. 
+	- product = Product.objects.earliest('unit_price')
+	- product = Product.objects.latest('unit_price')
+	- latest() first sort the products in descending order and then returns first object.
+
+
+# Limitig Results:
+	- queryset = Product.objects.all()[:5]
+	- Above command will return first 5 objects in the array/QuerySet at index(0, 1, 2, 3, 4)
+	- queryset = Product.objects.all()[5:10]
+	- Above command will return second 5 objects in the array/QuerySet at index(5, 6, 7, 8, 9)
+
+
+# Selecting Certain Fields of a Table to Query:
+	- Using values() we can read only certain field of objects and also related fields.
+	- queryset = Product.objects.values('id', 'title', 'collection__title')
+	- In values() method, instead of getting bunch of Product instances, we get bunch of dictionary objects.
+	- Another method is values_list() which returns tuples instead of dictionary.
+	- queryset = Product.objects.values_list('id', 'title', 'collection__title')
+	- distinct(),a method  of QuerySet, used for removing similar/repeating/duplicate objects.
