@@ -13,5 +13,12 @@
     {% else %}
         <p>Hello No One!</p>
     {% endif %}
+    <ul>
+        {% for product in products %}
+            <li>
+                {{product.title}}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
