@@ -346,3 +346,33 @@ django-admin startproject <projectname>
 	- queryset = Customer.objects.annotate(new_id=F('id'))
 	- We can also perform computations in annonate() method.
 	- queryset = Customer.objects.annotate(new_id=F('id') + 1)
+
+
+# Calling Database Functions using Django.
+	- CONCAT function of database: (Used for concatenation of string.)
+	- Concatenating first and last_name of customers.
+	- queryset = Customer.objects.annotate(full_name=Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT'))
+	- In annotate, we cannot just give any value without Value expression.
+	- Another way of concatenating database.
+	- queryset = Customer.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'))
+	- Concat Function takes Column name as arguments but for simple values/expression we have to give in it Value class, otherwise simple values will be taken as Column names.
+
+
+# Grouping Data:
+	- To look at the number of orders each customer has placed, we'll group no of orders for each customer.
+	- queryset = Customer.objects.annotate(orders_count=Count('order'))
+	- Here we have created customer foriegn key in order class so django creates reverse relationship in customer class as order_set. 
+	- But for some reason, here 'order_set' does not work but only 'order' works.
+
+
+# Expression Wrappers:
+	- Expression class, a base class for all type of expressions. Derivatives of this class are:
+	- Values() --> for representing simple values. e.g., boolean, number, string 
+	- F() --> for referencing values
+	- Func() --> for calling database functions
+	- aggregate() --> a base class for all aggregate classes. e.g., count, sum, min, max etc.
+	- ExpressionWrapper --> for building complex expressions.
+	- queryset = Product.objects.annotate(discounted_price=F('unit_price') * 0.8)
+	- Above expression raise an error. For this, we'll use ExpressionWrapper. 
+	- For monetary values always use DecimalField. FloatField have rounding issues.	
+	- discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())

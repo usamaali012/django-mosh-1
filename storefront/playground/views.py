@@ -1,10 +1,13 @@
 import collections
+from decimal import Decimal
 from re import I
 from django.shortcuts import render
-from django.db.models import Value, Q, F
-from django.db.models.aggregates import Max, Min, Sum, Avg, Count
 from django.core.exceptions import ObjectDoesNotExist
-from store.models import Customer, Product, OrderItem, Order
+from store.models import Customer, Product, OrderItem, Order 
+from django.db.models.functions import Concat
+from django.db.models import Value, Q, F, Func, ExpressionWrapper, DecimalField
+from django.db.models.aggregates import Max, Min, Sum, Avg, Count
+
 
 # Create your views here.
 
@@ -108,6 +111,17 @@ def sayHello(request):
 
     # queryset = Customer.objects.annotate(new_id=F('id'))
 
-    queryset = Customer.objects.annotate(new_id=F('id') + 1)
+    # queryset = Customer.objects.annotate(new_id=F('id') + 1)
 
-    return render(request, 'hello.html', {'name': 'Usama Ali ', 'result': list(queryset)})
+    # queryset = Customer.objects.annotate(full_name=Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT'))
+
+    # queryset = Customer.objects.annotate(full_name=Concat('first_name', Value(' '), 'last_name'))
+
+    # queryset = Customer.objects.annotate(orders_count=Count('order'))
+
+    # queryset = Product.objects.annotate(discounted_price=F('unit_price') * 0.8)
+
+    discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    queryset = Product.objects.annotate(discounted_price=discounted_price)
+
+    return render(request, 'hello.html', {'name': 'Usama Ali ', 'results': list(queryset)})
