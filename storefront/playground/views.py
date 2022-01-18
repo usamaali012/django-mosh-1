@@ -1,8 +1,10 @@
 import collections
+from re import I
 from django.shortcuts import render
-from django.db.models import Q, F
+from django.db.models import Value, Q, F
+from django.db.models.aggregates import Max, Min, Sum, Avg, Count
 from django.core.exceptions import ObjectDoesNotExist
-from store.models import Product, OrderItem
+from store.models import Customer, Product, OrderItem, Order
 
 # Create your views here.
 
@@ -73,19 +75,39 @@ def sayHello(request):
 
     # query_set = Product.objects.all()[5:10]
 
-    # query_set = Product.objects.values('id', 'title')
+    # queryset = Product.objects.values('id', 'title')
 
     # query_set = Product.objects.values('id', 'title', 'collection__title')
 
-    # query_set = Product.objects.values_list('id', 'title', 'collection__title')
+    # queryset = Product.objects.values_list('id', 'title', 'collection__title')
 
     # query_set = Product.objects.filter(id=F('orderitem__product_id')).order_by('title')
 
     # query_set = OrderItem.objects.values('product__id')
 
-    ordered_items = OrderItem.objects.values('product__id').distinct()
-    query_set = Product.objects.filter(id__in=ordered_items).order_by('title')
+    # ordered_items = OrderItem.objects.values('product__id').distinct()
+    # query_set = Product.objects.filter(id__in=ordered_items).order_by('title')
 
-    print(query_set.count())
+    # queryset = Product.objects.only('id', 'title')
 
-    return render(request, 'hello.html', {'name': '', 'products': list(query_set)})
+    # queryset = Product.objects.defer('description')
+
+    # queryset = Product.objects.all()
+
+    # queryset = Product.objects.select_related('collection').all()
+
+    # queryset = Product.objects.prefetch_related('promotions').all()
+
+    # queryset = Product.objects.prefetch_related('promotions').select_related('collection').all()
+
+    # queryset = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
+
+    # result = Product.objects.filter(collection__id=1).aggregate(count=Count('id'), min_price=Min('unit_price'))
+
+    # queryset = Customer.objects.annotate(is_new=Value(True))
+
+    # queryset = Customer.objects.annotate(new_id=F('id'))
+
+    queryset = Customer.objects.annotate(new_id=F('id') + 1)
+
+    return render(request, 'hello.html', {'name': 'Usama Ali ', 'result': list(queryset)})

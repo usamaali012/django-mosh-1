@@ -293,3 +293,56 @@ django-admin startproject <projectname>
 	- Another method is values_list() which returns tuples instead of dictionary.
 	- queryset = Product.objects.values_list('id', 'title', 'collection__title')
 	- distinct(),a method  of QuerySet, used for removing similar/repeating/duplicate objects.
+
+
+# Deferring Objects:
+	- .only() method --> we can specify fields we want to read from our database. Similat to value() method
+	- queryset = Product.objects.only('id', 'title')
+	- With value() method we get dictionary objects, while with the only() method, we get instances of the product class.
+	- Be CAREFUL with this method. You can end up running lots of queries.
+	- Therefore, value() method is preferred.
+	- defer() method --> To exclude a field(kind of) from our queryset.
+	- Be careful with this too.
+
+
+# Selecting Related Objects:
+	- 1: select_related():
+	- queryset = Product.objects.all()
+	- Using above query if we also get Title of collection table (related table of Product), to find collection of each product, a separate query will run because we are only querying the Product table not the collection table or any related table. And django will not run query for collection table unless asked.
+	- If we know we are going to query the related table we can preload it using select_related('TableName') method.
+	- queryset = Product.objects.select_related('collection').all()
+	- select_related() creates a join in our SQL query.
+	- if we also want to load a table which is related to collection table, we can say:
+	- select_related('1stTableName__2ndTableName')
+	- we use select_related() when the other end of the relationship has one instance, like a product has one collection.
+	- 2: prefetch_related():
+	- we use prefetch_related() when the other end of the relationship has many instances/objects, like promotion of a product. each product have many promotions. (ManyToMany Relationship)
+	- So, to preload the promotions, we'll use prefetch_related() method.
+	- queryset = Product.objects.prefetch_related('promotions').all()
+	- Can also call both methods together.
+	- queryset = Product.objects.prefetch_related('promotions').select_related('collection').all()
+	- The order for applying this method does NOT matter.
+
+
+# Related Class:
+	- If you make a class related to another class, yoy do NOT have to specify the relation in both class. One is enough.
+	- Django will create the reverse relationship in 2nd class itslef by the name "1stClassName_set"
+
+
+# Aggregation:
+	- .aggregate() method. Import aggregates.
+	- Product.objects.aggregate(Count('description'))
+	- result = Product.objects.aggregate(count=Count('id'), min_price=Min('unit_price')) 
+	- result = Product.objects.filter(collection__id=1).aggregate(count=Count('id'), min_price=Min('unit_price'))
+	- aggregate() methods returns an object.
+
+
+# Annotation:
+	- annonate() is used to add another field/column to our table at the run time.
+	- Cannot pass boolean value to annotate() method. Need to pass an expression object.
+	- In django, we have an expression class which is a base class for all types of expressions.
+	- In this class we have, "Value" expression for simple values, "F" for referencing fields, "Func" for calling database function (for manipualting Data), "Aggregate" (a base class for all the aggregate classes e.g., count, sum, min)
+	- queryset = Customer.objects.annotate(is_new=Value(True))
+	- queryset = Customer.objects.annotate(new_id=F('id'))
+	- We can also perform computations in annonate() method.
+	- queryset = Customer.objects.annotate(new_id=F('id') + 1)
