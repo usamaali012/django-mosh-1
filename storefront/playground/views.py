@@ -1,13 +1,15 @@
-import collections
-from decimal import Decimal
-from re import I
 from django.shortcuts import render
-from django.core.exceptions import ObjectDoesNotExist
-from store.models import Customer, Product, OrderItem, Order 
+
+from store.models import Collection, Customer, Product, OrderItem, Order 
+from tags.models import TaggedItem
+
+from django.db import transaction
+from django.db import connection
 from django.db.models.functions import Concat
 from django.db.models import Value, Q, F, Func, ExpressionWrapper, DecimalField
 from django.db.models.aggregates import Max, Min, Sum, Avg, Count
 
+from django.contrib.contenttypes.models import ContentType
 
 # Create your views here.
 
@@ -121,7 +123,80 @@ def sayHello(request):
 
     # queryset = Product.objects.annotate(discounted_price=F('unit_price') * 0.8)
 
-    discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
-    queryset = Product.objects.annotate(discounted_price=discounted_price)
+    # discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    # queryset = Product.objects.annotate(discounted_price=discounted_price)
 
-    return render(request, 'hello.html', {'name': 'Usama Ali ', 'results': list(queryset)})
+    # content_type = ContentType.objects.get_for_model(Product)
+    # queryset = TaggedItem.objects.select_related('tag').filter(
+        # content_type=content_type,
+        # object_id=1
+    # )
+    # TaggedItem.objects.get_tags_for(Product, 1)
+
+    # queryset = Product.objects.all()
+
+    # queryset[0]
+
+    # list(queryset)
+
+    #CREATING OBJECTS:
+    # collection = Collection(title='a')
+    # collection.title = 'Video Games'
+    # collection.featured_product = Product(pk=1)
+    # # collection.featured_product_id = 1
+    # collection.save()
+    # OR
+    # Collection.objects.create(title='a', featured_prodcut_id=1)
+
+
+    # UPDATING OBJECTS (#1) to update all the fields
+    # collection = Collection(pk=11)
+    # collection.title = 'Games'
+    # collection.featured_product = None
+    # collection.save()
+
+    # UPDATING OBJECTS (#2) to update single or few fields
+    # collection = Collection.objects.get(pk=11)
+    # collection.featured_product = Product(pk=2)
+    # collection.save()
+
+
+    # UPDATING OBJECTS (#3)
+    # Collection.objects.filter(pk=11).update(featured_product=None)
+
+
+
+
+    # DELETING OBJECTS: (Single)
+    # collection = Collection(pk=11)
+    # collection.delete()
+
+
+    # DELETING OBJECTS: (Multiple)
+    # Collection.objects.filter(id__gt=5).delete()
+
+
+    # Running multiple changes to database together:
+    # with transaction.atomic():
+    #     order = Order()
+    #     order.customer_id = 1
+    #     order.save()
+
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = -1
+    #     item.quantity = 1
+    #     item.unit_price = 10
+    #     item.save()
+
+
+    # queryset = Product.objects.raw('SELECT * FROM store_product')
+
+    # cursor = connection.cursor()
+    # cursor.execute('SELECT * FROM store_product')
+    # cursor.close()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM store_product')    # cursor will close itself.
+
+    return render(request, 'hello.html', {'name': 'Usama Ali ', 'results': ''})

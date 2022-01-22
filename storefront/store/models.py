@@ -1,8 +1,4 @@
 from django.db import models
-from django.db.models import indexes
-from django.db.models import fields
-from django.db.models.fields import EmailField
-from django.db.models.fields.related import OneToOneField
 
 # Create your models here.
 
