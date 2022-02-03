@@ -218,3 +218,27 @@
 
 	- "TabularInline" shows a table form in which each row is a new entry in child table and the columns are fields of child table.
 	- "StackedInLine" does NOT have columns. In this fileds of each entry of child class shows up as rows stacked on each other.
+
+
+
+# Using Generic Relations:
+	- We have created an app tags which is connected with store app using generic relationship.
+	- But for that to work, we first have to register models of tags class in its own module.
+	- After that you can create an inline class in store admin module and it will inherit from a special class which is either "GenericStackedInLine" or "GenericTabularInLine". 
+
+
+# Extending Pluggable Apps:
+	- In the last section we are importing TaggedItem Module from Tag app in store app.
+	- Which means our Store app has a dependency on Tag app.
+	- So, now we cannot deploy our apps independently.
+	- And Ideally our apps should be self contained and NOT dependent on other apps.
+	- So now we need to de-couple or store app from tag app.
+	- For that, we will create a new app which we can call "store_custom" which is the customization of store app which will know about bith these apps.
+	- Now in the "admin" of this app we are going to combine features from the two pluggable apps.
+	- Now move everything we created in the last lecture.
+	- All GenericRelationship should be mived here.
+	- As now we are going to register a new Product Model admin class because we have a new admin class for product
+	- "CustomProductAdmin"
+	- We first have to unregister tho old Product Model.
+	- Also Register this app in the list of INSTALLED APPS.
+	- Now our store app has no dependency on tags app or any other app.

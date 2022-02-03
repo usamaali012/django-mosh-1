@@ -1,7 +1,4 @@
-from django.contrib import admin, messages
-from django.contrib.contenttypes.admin import GenericTabularInline
-
-from tags.models import TaggedItem
+from django.contrib import admin, messages 
 from . import models
 from django.utils.html import format_html, urlencode
 from django.urls import reverse
@@ -22,11 +19,6 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt=10) 
 
 
-class TagInLine(GenericTabularInline):
-    autocomplete_fields = ['tag']
-    model  = TaggedItem
-
-
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {
@@ -36,7 +28,6 @@ class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
     actions = ['clear_inventory']
     search_fields = ['title']
-    inlines = [TagInLine]
     
     list_display = ['title', 'unit_price', 'inventory_status', 'collection']
     list_editable = ['unit_price']
