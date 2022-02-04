@@ -7,12 +7,12 @@
 	- .all() --> for pulling out all the objects in our table/Model.
 	- .get() --> for getting a single object
 	- .filter() --> For filtering data, etc.
-	- Most of these methods returns a QuerySet object. e.g., all above methods.
+	- Most of these methods returns a QuerySet object. e.g., all above methods except object.
 	- On the contrary, we have some methods that returns result right away. e.g., 
-	- .count() --> returns thr number of no. of records in the model/table.
-	- QuerySet is an object  that encapsulate a query.
+	- .count() --> returns the number of no. of records in the model/table.
+	- QuerySet is an object that encapsulate a query.
 	- Django Evaluates this QuerySet, and then it will generate the right SQL statement to send to our database.
-	- It does NOT always generate/evaluate a SQL statement but only for few scenarios. e.g., using .all() and loopinh through all objects.
+	- It does NOT always generate/evaluate a SQL statement but only for few scenarios. e.g., using .all() and looping through all objects.
 	- One scenario where QuerySet is evaluated is when we iterate over it.
 	- Another scenario is when we convert it to a list. 
 	- 3rd scenario is when we access an individual element or elements.
@@ -84,8 +84,8 @@
 	- filter(AttributeName__contains='AttributeValue')
 	- query_set = Product.objects.filter(title__icontains='coffee')
 	- query_set = Product.objects.filter(title__contains='coffee')
-	- __startswith, __endswithcetc.
-	- To see if an object has an attribute with null value
+	- __startswith, __endswith etc.
+	- To see if an object has an attribute with null value.
 	- query_set = Product.objects.filter(description__isnull=True)
 
 # Date Filtering:
@@ -109,7 +109,10 @@
 	- condition is: inventory < 10 OR price < 20.
 	- query_set = Product.objects.filter(Q(inventory__lt=10) | Q(unit_price__lt=20))
 	- query_set = Product.objects.filter(Q(inventory__lt=10) & ~Q(unit_price__lt=20))
-	- Here | stands for OR. and & stands for AND and ~ stands for NOT.
+	- Here: 
+	- | stands for OR. and 
+	- & stands for AND and 
+	- ~ stands for NOT.
 
 
 # Referencing Fields:
@@ -122,7 +125,7 @@
 # F Objects:
 	- using this class we can reference a particular field from the same table.
 	- query_set = Product.objects.filter(inventory=F('unit_price'))
-	- Using F Object, we can also reference fielf in a related table.
+	- Using F Object, we can also reference field in a related table.
 	- query_set = Product.objects.filter(inventory=F('collection__id')), In general:
 	- F('relatedTableName__relatedTableFiled')
 
@@ -195,7 +198,7 @@
 
 
 # Related Class:
-	- If you make a class related to another class, yoy do NOT have to specify the relation in both class. One is enough.
+	- If you make a class related to another class, you do NOT have to specify the relation in both class. One is enough.
 	- Django will create the reverse relationship in 2nd class itslef by the name "1stClassName_set"
 
 
@@ -231,7 +234,7 @@
 # Grouping Data:
 	- To look at the number of orders each customer has placed, we'll group no of orders for each customer.
 	- queryset = Customer.objects.annotate(orders_count=Count('order'))
-	- Here we have created customer foriegn key in order class so django creates reverse relationship in customer class as order_set. 
+	- As we have created customer foriegn key in order class so django creates reverse relationship in customer class as order_set. 
 	- But for some reason, here 'order_set' does not work but only 'order' works.
 
 
@@ -250,7 +253,7 @@
 
 
 # Querying Generic Relationship:
-	- In "tag" app, we used ContentType in class "TaggedItem" model to decouple this app from other apps in our project. It is NOT connected to other apps in the same project in anyway.
+	- In "tag" app, we used ContentType in class "TaggedItem" model to decouple this app from other apps in our project. It is NOT connected to other apps in the same project in any way.
 	- We can use this app anywhere other than this project too.
 	- In our database, we have a table called 'django_content_type'.
 	- Here we have all the models that we have defined in our apps, and some built-in django models.
@@ -284,7 +287,7 @@
     - But for this we have to To build custom manager for the taggedItem model.	
     - "objects" attribute returns a manager, that in return help us talk to database or manage database.
     - Here we want to replace this with a custom manager.
-    - This custom manager class will be created in models module in tags app. Inherited fro models.Manager class.
+    - This custom manager class will be created in models module in tags app. Inherited from models.Manager class.
     - Manager class is base class for all managers.
 
 
@@ -293,7 +296,7 @@
 	- That is why when Django evaluate a query for the first time from the database, it then stores it somewhere in memory calles QuerySet cache.
 	- So, 2nd time you evaluate the same query, django will not go to database again, it will read data from the QuerySet Cache.
 	- for example: Here is aquery:
-	- queryset = Product.objects.all()   --> Now its evaluate it. So django may run the query and connect to database.
+	- queryset = Product.objects.all()   --> Now lets evaluate it. So django may run the query and connect to database.
 	- list(queryset)    -- > This time django will go to database. But if we evaluate it again,
 	- list(queryset)    -- > This time django will NOT go to database. It will read from QuerySet Cache.
 	- Same thing happens if we acces an individual element from this queryset

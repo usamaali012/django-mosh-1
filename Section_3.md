@@ -9,11 +9,11 @@
 
 # ASSOSIATION CLASS:
 	 - Which represents the relationship between other 2 classes (tables) who are in Many to Many Relationship. e.g., Contacts and Groups are two classes which are in many to many relationship and we create an assosiation class called GroupContacts which shows relationship between these classes.
-- One Many-to-Many Relationship with an Assosiation Class or Two 1-to-Many Relationship
+	- One Many-to-Many Relationship with an Assosiation Class or Two 1-to-Many Relationship
 
 # Monolith:
 	- When code becomes too big
-# A good design is with MINIMAL COUPLING between Apps (Django) meaning and Apps does NOT depend on each other for their functionality.	
+# A good design is with MINIMAL COUPLING between Apps (Django) meaning Apps does NOT depend on each other for their functionality.	
 # HIGH COHESION (FOCUS) meaning each app is focused on a specific piece of functionality and includes everything needed to fulfil that piece of functionality.
 
 # For Monetary Values, Always use DecimalField. FloatField have rounding issues.
@@ -28,17 +28,17 @@
 
 
 # Many-to-Many Example:
-- Promotion - Product
-- Using ManyToManyField in one class, Django creates a reverse column in the other class. named as:
- "firstClassName_set"
- - Or you can supply a name to related_name an argument while defining ManyToManyField in one class.
- - If you want to avoid creating a reverse relationship in the other class set related_name to +. i,e., 
- - related_name='+'
+	- Promotion - Product
+	- Using ManyToManyField in one class, Django creates a reverse column in the other class. named as:
+	 "firstClassName_set"
+	 - Or you can supply a name to "related_name", an argument while defining ManyToManyField in one class.
+	 - If you want to avoid creating a reverse relationship in the other class set "related_name" to +. i,e., 
+	 - related_name='+'
 
 
 # CIRCULAR DEPENDENCY:
 	- CIRCULAR DEPENDENCY happens when two classes depend on each other at the same time. We should avoid it.
 
 # 'django.contrib.contenttypes' (ContentType):
-	 - using contenttypes, we can create generic relationships between our models. (it allows to have generic relationships)
-	 - ContentType is a model that represents a type of an object in our application.
+	- using contenttypes, we can create generic relationships between our models. (it allows us to have generic relationships)
+	- ContentType is a model that represents a type of an object in our application.

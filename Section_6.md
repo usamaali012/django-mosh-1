@@ -6,7 +6,7 @@
 	- To change admin/superuser's password:
 	- python manage.py changepassword admin
 	- Admin interface has a built-in header 'Django administration'
-	- To chnage it go to urls.py file of main project and write:
+	- To change it go to urls.py file of main project and write:
 	- admin.site.site_header = 'Storefront Admin'
 	- To change second heading in admin app:
 	- admin.site.index_title = 'Admin'  
@@ -30,8 +30,8 @@
 
 
 # Customizing The List Page:
-	- List Page is the pasge where all the objects of your class are showing.
-	- Create a new class  by name 'NameofModelAdmin' ==> 'ProductAdmin' in admin.py file.
+	- List Page is the page where all the objects of your class are showing.
+	- Create a new class  by name 'NameofmodelAdmin' ==> 'ProductAdmin' in admin.py file.
 	- Class should inherit from 'admin.ModelAdmin'
 	- With this class we can specify how we wanna view or edit the products on admin site
 	- In this class we can set a bunch of attributes to customize the list page.
@@ -125,6 +125,7 @@
 	- This will add a side bar of 2 filters. collection and last_update.
 	- Now we can easily filter products on these basis.
 	- This is a built-in filters.
+
 	- Now custom filters:
 	- create a new class which will inherit from 'admin.SimpleListFilter'
 	- add title and parameter_name attributes. (name=name of filter), (parameter_name= parameter name to show up in querystring)
@@ -228,15 +229,15 @@
 
 
 # Extending Pluggable Apps:
-	- In the last section we are importing TaggedItem Module from Tag app in store app.
+	- In the last lecture, we are importing TaggedItem Module from Tag app in store app.
 	- Which means our Store app has a dependency on Tag app.
 	- So, now we cannot deploy our apps independently.
 	- And Ideally our apps should be self contained and NOT dependent on other apps.
 	- So now we need to de-couple or store app from tag app.
 	- For that, we will create a new app which we can call "store_custom" which is the customization of store app which will know about bith these apps.
-	- Now in the "admin" of this app we are going to combine features from the two pluggable apps.
+	- Now in the "admin" module of this app we are going to combine features from the two pluggable apps.
 	- Now move everything we created in the last lecture.
-	- All GenericRelationship should be mived here.
+	- All GenericRelationship should be moved here.
 	- As now we are going to register a new Product Model admin class because we have a new admin class for product
 	- "CustomProductAdmin"
 	- We first have to unregister tho old Product Model.

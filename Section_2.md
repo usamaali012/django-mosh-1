@@ -26,10 +26,10 @@ django-admin startproject <projectname>
 
 
 # migrations folder in each app for generating database tables.
-# admon.py to decide how admin page of our django app will look like
+# admin.py to decide how admin page of our django app will look like
 # app.py is place where we configure our app
 # models.py is to design model classes for our app and to pull out data from our database
-# views.py in NOT used for creating views. It is a RequestHandler for our app. Here we create view functions
+# views.py is NOT used for creating views. It is a RequestHandler for our app. Here we create view functions
 # A view function takes a request and returns a response.  REQUEST -> RESPONSE
 # urls.py is a file where we map our URLs to our view functions.
 # views in django are called templates
